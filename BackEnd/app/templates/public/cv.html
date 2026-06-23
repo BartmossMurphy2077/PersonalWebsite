@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% set active_page = 'cv' %}
+{% block title %}CV - {{ settings.name }}{% endblock %}
+
+{% block content %}
+<section class="container content-page">
+    <div class="cv-header">
+        <h1 class="section-title">// curriculum vitae</h1>
+        {% if settings.cv_pdf_filename %}
+        <a class="btn btn-primary" href="{{ url_for('public.cv_download') }}">Download PDF</a>
+        {% endif %}
+    </div>
+
+    {% if entries %}
+    <ol class="timeline">
+        {% for entry in entries %}
+        <li class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+                <span class="timeline-dates">{{ entry.start_date }} &ndash; {{ entry.end_date or 'present' }}</span>
+                <h3>{{ entry.title }}</h3>
+                <p class="timeline-org">{{ entry.organization }}</p>
+                {% if entry.bullets %}
+                <ul>
+                    {% for bullet in entry.bullets %}<li>{{ bullet }}</li>{% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </li>
+        {% endfor %}
+    </ol>
+    {% else %}
+    <p class="empty-state">No timeline entries yet.</p>
+    {% endif %}
+</section>
+{% endblock %}

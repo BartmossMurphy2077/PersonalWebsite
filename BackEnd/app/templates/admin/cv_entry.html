@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% set section = 'cv' %}
+{% block title %}Edit Entry{% endblock %}
+{% block heading %}Edit Timeline Entry{% endblock %}
+
+{% block content %}
+<form method="post" class="admin-form">
+    <label>Title <input type="text" name="title" value="{{ entry.title }}" required></label>
+    <label>Organization <input type="text" name="organization" value="{{ entry.organization }}"></label>
+    <div class="form-row">
+        <label>Start date <input type="text" name="start_date" value="{{ entry.start_date }}"></label>
+        <label>End date <input type="text" name="end_date" value="{{ entry.end_date or '' }}"></label>
+    </div>
+    <label>Display order <input type="number" name="display_order" value="{{ entry.display_order }}"></label>
+    <label>Bullet points <small>(one per line)</small>
+        <textarea name="bullets" rows="4">{{ entry.bullets | join('\n') }}</textarea>
+    </label>
+    <div class="form-actions">
+        <button type="submit" class="btn-save">Save</button>
+        <a class="btn-small" href="{{ url_for('admin.cv') }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}

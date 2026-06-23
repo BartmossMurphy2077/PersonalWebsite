@@ -1,1 +1,18 @@
 BackEnd/venv
+
+# Secrets
+.env
+BackEnd/.env
+
+# Local database
+*.db
+BackEnd/portfolio.db
+BackEnd/instance/
+
+# Uploaded media
+BackEnd/uploads/
+
+# Python caches
+__pycache__/
+*.pyc
+.pytest_cache/

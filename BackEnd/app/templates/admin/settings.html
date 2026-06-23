@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% set section = 'settings' %}
+{% block title %}Site Settings{% endblock %}
+{% block heading %}Site Settings{% endblock %}
+
+{% block content %}
+<form method="post" class="admin-form">
+    <label>Name
+        <input type="text" name="name" value="{{ settings.name }}" required>
+    </label>
+    <label>Tagline / role
+        <input type="text" name="tagline" value="{{ settings.tagline }}">
+    </label>
+    <label>Hero bio
+        <textarea name="hero_bio" rows="4">{{ settings.hero_bio }}</textarea>
+    </label>
+    <label>GitHub URL
+        <input type="url" name="github_url" value="{{ settings.github_url }}">
+    </label>
+    <label>LinkedIn URL
+        <input type="url" name="linkedin_url" value="{{ settings.linkedin_url }}">
+    </label>
+    <label>Rotating subtitle lines <small>(one per line)</small>
+        <textarea name="subtitle_lines" rows="4">{{ settings.subtitle_lines | join('\n') }}</textarea>
+    </label>
+
+    <fieldset class="terminal-commands">
+        <legend>Terminal commands</legend>
+        <p class="hint">Define what the home-page terminal replies to each command.</p>
+        <div id="cmd-rows">
+            {% for name, reply in settings.terminal_responses.items() %}
+            <div class="cmd-row">
+                <input type="text" name="cmd_name" value="{{ name }}" placeholder="command">
+                <input type="text" name="cmd_reply" value="{{ reply }}" placeholder="response">
+            </div>
+            {% endfor %}
+            <div class="cmd-row">
+                <input type="text" name="cmd_name" placeholder="command">
+                <input type="text" name="cmd_reply" placeholder="response">
+            </div>
+        </div>
+    </fieldset>
+
+    <button type="submit" class="btn-save">Save settings</button>
+</form>
+{% endblock %}

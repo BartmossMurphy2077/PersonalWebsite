@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% set section = 'projects' %}
+{% block title %}Projects{% endblock %}
+{% block heading %}Projects{% endblock %}
+
+{% block content %}
+<a class="btn-save" href="{{ url_for('admin.create_project') }}">+ New project</a>
+
+{% if projects %}
+<ul class="admin-list">
+    {% for project in projects %}
+    <li class="admin-list-item">
+        <div>
+            <strong>{{ project.title }}</strong>
+            {% if project.is_featured %}<span class="badge">featured</span>{% endif %}
+            <div class="muted">{{ project.tech_tags | join(', ') }}</div>
+        </div>
+        <div class="admin-list-actions">
+            <a class="btn-small" href="{{ url_for('admin.edit_project', project_id=project.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.delete_project', project_id=project.id) }}"
+                  onsubmit="return confirm('Delete this project?')">
+                <button type="submit" class="btn-small btn-danger">Delete</button>
+            </form>
+        </div>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p class="empty-state">No projects yet.</p>
+{% endif %}
+{% endblock %}

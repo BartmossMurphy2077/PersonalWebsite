@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% set active_page = 'home' %}
+{% block title %}{{ settings.name }} - {{ settings.tagline }}{% endblock %}
+
+{% block content %}
+<section class="hero container">
+    <div class="hero-left">
+        {% if primary_photo %}
+        <img class="hero-photo" src="{{ url_for('public.uploads', filename=primary_photo.filename) }}"
+             alt="{{ primary_photo.alt_text or settings.name }}">
+        {% else %}
+        <div class="hero-photo placeholder" title="Add a primary photo in the admin dashboard">
+            {{ settings.name[:1] | upper }}
+        </div>
+        {% endif %}
+        <h1 class="hero-name">{{ settings.name }}</h1>
+        <p class="hero-role">{{ settings.tagline }}</p>
+        <p class="hero-bio">{{ settings.hero_bio }}</p>
+        <div class="hero-cta">
+            <a class="btn btn-primary" href="{{ url_for('public.projects') }}">View Projects</a>
+            {% if settings.cv_pdf_filename %}
+            <a class="btn btn-ghost" href="{{ url_for('public.cv_download') }}">Download CV</a>
+            {% else %}
+            <a class="btn btn-ghost" href="{{ url_for('public.cv') }}">See CV</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="hero-right">
+        <div class="typewriter">
+            <span class="prompt">&gt;</span>
+            <span id="typewriter-text" data-lines='{{ settings.subtitle_lines | tojson }}'></span><span class="caret">_</span>
+        </div>
+
+        <div class="terminal" id="terminal" data-responses='{{ settings.terminal_responses | tojson }}'>
+            <div class="terminal-bar">
+                <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                <span class="terminal-title">bash</span>
+            </div>
+            <div class="terminal-body" id="terminal-body">
+                <div class="terminal-line"><span class="prompt">guest@hugo:~$</span> help</div>
+                <div class="terminal-line muted">Try: whoami, skills, projects</div>
+            </div>
+            <div class="terminal-input-row">
+                <span class="prompt">guest@hugo:~$</span>
+                <input type="text" id="terminal-input" autocomplete="off" spellcheck="false"
+                       aria-label="terminal input" placeholder="type a command...">
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if featured %}
+<section class="featured container">
+    <h2 class="section-title">// featured project</h2>
+    <article class="project-card featured-card">
+        <h3>{{ featured.title }}</h3>
+        <p>{{ featured.description }}</p>
+        <div class="tags">
+            {% for tag in featured.tech_tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+        </div>
+        <a class="link-arrow" href="{{ url_for('public.projects') }}">see all projects &rarr;</a>
+    </article>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

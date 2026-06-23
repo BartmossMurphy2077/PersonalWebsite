@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% set active_page = 'about' %}
+{% block title %}About - {{ settings.name }}{% endblock %}
+
+{% block content %}
+<section class="container content-page">
+    <h1 class="section-title">// about me</h1>
+    <div class="about-bio">
+        {% for para in about.long_bio.split('\n') if para.strip() %}
+        <p>{{ para }}</p>
+        {% endfor %}
+    </div>
+
+    {% if about.interests %}
+    <h2 class="subsection-title">interests</h2>
+    <div class="about-interests">
+        {% for para in about.interests.split('\n') if para.strip() %}
+        <p>{{ para }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if photos %}
+    <h2 class="subsection-title">gallery</h2>
+    <div class="photo-grid">
+        {% for photo in photos %}
+        <figure class="photo-item">
+            <img src="{{ url_for('public.uploads', filename=photo.filename) }}"
+                 alt="{{ photo.alt_text or settings.name }}">
+        </figure>
+        {% endfor %}
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
