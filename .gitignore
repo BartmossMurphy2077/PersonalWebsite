@@ -2,7 +2,7 @@ BackEnd/venv
 
 # Secrets
 .env
-BackEnd/.env
+**/.env
 
 # Local database
 *.db

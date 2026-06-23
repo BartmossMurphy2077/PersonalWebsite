@@ -1,0 +1,38 @@
+# Orchestrates the portfolio CMS: an nginx web tier in front of the gunicorn
+# Flask backend, with a persistent volume for the SQLite DB and uploads.
+#
+# Usage (from the repository root):
+#   cp .env.example .env   # then edit SECRET_KEY and ADMIN_PASSWORD
+#   docker compose -f infrastructure/docker-compose.yml up --build
+# Site is then available at http://localhost:8080
+
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: infrastructure/backend.Dockerfile
+    env_file:
+      - ../.env
+    environment:
+      # Keep the database and uploads on the mounted volume so they persist.
+      DATABASE_URL: sqlite:////data/portfolio.db
+      UPLOAD_FOLDER: /data/uploads
+      BEHIND_PROXY: "1"
+    volumes:
+      - portfolio-data:/data
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: infrastructure/nginx.Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  portfolio-data:

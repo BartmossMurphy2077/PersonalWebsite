@@ -1,6 +1,7 @@
 """Behaviour tests for admin auth and content management."""
 
 import io
+import re
 
 
 def test_admin_requires_login(client):
@@ -60,19 +61,17 @@ def test_creating_project_appears_on_public_page(auth_client, client):
 def test_editing_project_updates_public_page(auth_client, client):
     auth_client.post(
         "/admin/projects/new",
-        data={"title": "Old Title", "description": "x", "display_order": "0"},
+        data={"title": "Old Title", "description": "x", "display_order": "99"},
     )
-    # Find the new project's edit id via the admin listing (last entry).
+    # The high display_order sorts this project last in the admin listing.
     listing = auth_client.get("/admin/projects").data.decode()
-    import re
-
     ids = re.findall(r"/admin/projects/(\d+)/edit", listing)
     assert ids
     project_id = ids[-1]
 
     auth_client.post(
         f"/admin/projects/{project_id}/edit",
-        data={"title": "New Title", "description": "y", "display_order": "0"},
+        data={"title": "New Title", "description": "y", "display_order": "99"},
     )
     response = client.get("/projects")
     assert b"New Title" in response.data
@@ -82,10 +81,9 @@ def test_editing_project_updates_public_page(auth_client, client):
 def test_deleting_project_removes_it_from_public_page(auth_client, client):
     auth_client.post(
         "/admin/projects/new",
-        data={"title": "Disposable", "description": "x", "display_order": "0"},
+        data={"title": "Disposable", "description": "x", "display_order": "99"},
     )
-    import re
-
+    # The high display_order sorts this project last in the admin listing.
     listing = auth_client.get("/admin/projects").data.decode()
     project_id = re.findall(r"/admin/projects/(\d+)/delete", listing)[-1]
     auth_client.post(f"/admin/projects/{project_id}/delete")

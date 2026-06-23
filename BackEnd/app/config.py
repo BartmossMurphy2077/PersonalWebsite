@@ -10,9 +10,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = Path(__file__).resolve().parent.parent  # the BackEnd/ directory
+PROJECT_ROOT = BASE_DIR.parent  # the repository root
+
+# Load the single root .env. In Docker the variables come from Compose's
+# env_file instead, so a missing file here is harmless.
+load_dotenv(PROJECT_ROOT / ".env")
 
 
 class Config:
