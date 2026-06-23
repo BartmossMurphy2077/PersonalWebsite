@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% set section = 'photos' %}
+{% block title %}Photos{% endblock %}
+{% block heading %}Photos{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="admin-form inline-form">
+    <label>Upload image
+        <input type="file" name="photo" accept="image/*" required>
+    </label>
+    <label>Alt text
+        <input type="text" name="alt_text" placeholder="describe the image">
+    </label>
+    <label class="checkbox">
+        <input type="checkbox" name="is_primary"> Set as primary (hero) photo
+    </label>
+    <button type="submit" class="btn-save">Upload</button>
+</form>
+
+{% if photos %}
+<div class="admin-photo-grid">
+    {% for photo in photos %}
+    <div class="admin-photo {{ 'is-primary' if photo.is_primary }}">
+        <img src="{{ url_for('public.uploads', filename=photo.filename) }}" alt="{{ photo.alt_text }}">
+        <div class="admin-photo-actions">
+            {% if photo.is_primary %}
+            <span class="badge">primary</span>
+            {% else %}
+            <form method="post" action="{{ url_for('admin.set_primary_photo', photo_id=photo.id) }}">
+                <button type="submit" class="btn-small">Make primary</button>
+            </form>
+            {% endif %}
+            <form method="post" action="{{ url_for('admin.delete_photo', photo_id=photo.id) }}"
+                  onsubmit="return confirm('Delete this photo?')">
+                <button type="submit" class="btn-small btn-danger">Delete</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="empty-state">No photos uploaded yet.</p>
+{% endif %}
+{% endblock %}

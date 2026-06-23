@@ -1,17 +1,8 @@
-from flask import Flask, send_from_directory
+"""Local development entry point for the portfolio CMS."""
 
-app = Flask(__name__, static_folder="../FrontEnd")
+from app import create_app
 
-
-@app.route("/")
-def serve_index():
-    return send_from_directory(app.static_folder, "index.html")
-
-
-@app.route("/<path:path>")
-def serve_static(path):
-    return send_from_directory(app.static_folder, path)
-
+app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)

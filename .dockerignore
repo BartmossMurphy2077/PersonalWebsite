@@ -1,0 +1,22 @@
+# Keep build context small and free of local/dev artifacts.
+**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# Virtualenv and local data
+BackEnd/venv/
+BackEnd/portfolio.db
+BackEnd/uploads/
+*.db
+
+# Secrets
+.env
+**/.env
+
+# Version control and tooling
+.git/
+.agents/
+.scratch/
+
+# Tests are not needed in the runtime image
+BackEnd/tests/

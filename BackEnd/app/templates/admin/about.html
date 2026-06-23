@@ -1,0 +1,16 @@
+{% extends "admin/base.html" %}
+{% set section = 'about' %}
+{% block title %}About{% endblock %}
+{% block heading %}About Page{% endblock %}
+
+{% block content %}
+<form method="post" class="admin-form">
+    <label>Long bio <small>(blank line separates paragraphs)</small>
+        <textarea name="long_bio" rows="8">{{ about.long_bio }}</textarea>
+    </label>
+    <label>Interests / hobbies
+        <textarea name="interests" rows="5">{{ about.interests }}</textarea>
+    </label>
+    <button type="submit" class="btn-save">Save about content</button>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% set section = 'projects' %}
+{% block title %}{{ 'New' if mode == 'new' else 'Edit' }} Project{% endblock %}
+{% block heading %}{{ 'New' if mode == 'new' else 'Edit' }} Project{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data" class="admin-form">
+    <label>Title <input type="text" name="title" value="{{ project.title or '' }}" required></label>
+    <label>Description <textarea name="description" rows="4">{{ project.description or '' }}</textarea></label>
+    <label>Tech stack <small>(comma separated)</small>
+        <input type="text" name="tech_tags" value="{{ project.tech_tags | join(', ') if project.tech_tags else '' }}">
+    </label>
+    <div class="form-row">
+        <label>GitHub URL <input type="url" name="github_url" value="{{ project.github_url or '' }}"></label>
+        <label>Demo URL <input type="url" name="demo_url" value="{{ project.demo_url or '' }}"></label>
+    </div>
+    <div class="form-row">
+        <label class="checkbox"><input type="checkbox" name="is_featured" {{ 'checked' if project.is_featured }}> Featured</label>
+        <label>Display order <input type="number" name="display_order" value="{{ project.display_order or 0 }}"></label>
+    </div>
+    <label>Thumbnail
+        <input type="file" name="thumbnail" accept="image/*">
+    </label>
+    {% if project.thumbnail_filename %}
+    <img class="thumb-preview" src="{{ url_for('public.uploads', filename=project.thumbnail_filename) }}" alt="current thumbnail">
+    {% endif %}
+    <div class="form-actions">
+        <button type="submit" class="btn-save">Save project</button>
+        <a class="btn-small" href="{{ url_for('admin.projects') }}">Cancel</a>
+    </div>
+</form>
+{% endblock %}
