@@ -41,12 +41,62 @@
         var responses = {};
         try { responses = JSON.parse(terminal.dataset.responses || "{}"); } catch (e) { responses = {}; }
 
+        var locked = false; // disables input during the icebreak sequence
+
         function print(text, className) {
             var line = document.createElement("div");
             line.className = "terminal-line" + (className ? " " + className : "");
             line.textContent = text;
             body.appendChild(line);
             body.scrollTop = body.scrollHeight;
+        }
+
+        function setTheme(theme) {
+            if (window.PortfolioTheme) window.PortfolioTheme.set(theme, true);
+        }
+
+        // The hidden cyberpunk unlock: prints a fake ICE-breach sequence, then
+        // flashes into the netrunner theme. Nods to the BartmossMurphy2077 handle.
+        function runIcebreak() {
+            if (!window.PortfolioTheme) {
+                print("theme engine unavailable", "muted");
+                return;
+            }
+            locked = true;
+            var lines = [
+                ["BREACHING ICE...", "muted"],
+                ["ARASAKA DAEMON.SYS .............. NEUTRALIZED", "accent"],
+                ["BLACKWALL HANDSHAKE ............. OK", "accent"],
+                ["FLATLINE PROTOCOL ............... BYPASSED", "accent"],
+                ["> Rache Bartmoss and Spider Murphy was here", "accent"],
+                ["THEME PACK DECRYPTED: PHOSPHOR_NET", "accent"]
+            ];
+            var i = 0;
+            (function step() {
+                if (i < lines.length) {
+                    print(lines[i][0], lines[i][1]);
+                    i++;
+                    window.setTimeout(step, 190);
+                } else {
+                    window.PortfolioTheme.flash("netrunner", function () {
+                        print("// welcome to the net, choom.", "accent");
+                        locked = false;
+                    });
+                }
+            })();
+        }
+
+        function handleTheme(arg) {
+            if (arg === "light" || arg === "dark") {
+                setTheme(arg);
+                print("theme set: " + arg);
+            } else if (arg === "icebreak" || arg === "netrunner") {
+                runIcebreak();
+            } else if (!arg) {
+                print("usage: theme <light|dark>", "muted");
+            } else {
+                print("unknown theme: " + arg, "muted");
+            }
         }
 
         function run(raw) {
@@ -58,6 +108,15 @@
                 print(Object.keys(responses).join("  ") || "(no commands)", "muted");
                 return;
             }
+            if (cmd === "theme" || cmd.indexOf("theme ") === 0) {
+                handleTheme(cmd.slice(5).trim());
+                return;
+            }
+            if (cmd === "help") {
+                if (responses.help) print(responses.help);
+                print("tip: 'theme dark' / 'theme light' switch the look. some themes are hidden.", "muted");
+                return;
+            }
             if (Object.prototype.hasOwnProperty.call(responses, cmd)) {
                 print(responses[cmd]);
             } else {
@@ -66,12 +125,12 @@
         }
 
         input.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
+            if (event.key === "Enter" && !locked) {
                 run(input.value);
                 input.value = "";
             }
         });
 
-        terminal.addEventListener("click", function () { input.focus(); });
+        terminal.addEventListener("click", function () { if (!locked) input.focus(); });
     }
 })();

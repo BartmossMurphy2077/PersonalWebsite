@@ -41,6 +41,13 @@ def test_cv_download_404_when_no_pdf(client):
     assert response.status_code == 404
 
 
+def test_unknown_route_renders_custom_404(client):
+    response = client.get("/this-page-does-not-exist")
+    assert response.status_code == 404
+    assert b"command not found" in response.data
+    assert b"theme-toggle" in response.data  # full themed layout rendered
+
+
 def test_uploaded_image_is_served(auth_client):
     """An image uploaded via admin is retrievable through the uploads route."""
     data = {
