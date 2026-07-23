@@ -56,7 +56,7 @@
         }
 
         // The hidden cyberpunk unlock: prints a fake ICE-breach sequence, then
-        // flashes into the netrunner theme. Nods to the BartmossMurphy2077 handle.
+        // flashes into the blackwall theme. Nods to the BartmossMurphy2077 handle.
         function runIcebreak() {
             if (!window.PortfolioTheme) {
                 print("theme engine unavailable", "muted");
@@ -69,7 +69,7 @@
                 ["BLACKWALL HANDSHAKE ............. OK", "accent"],
                 ["FLATLINE PROTOCOL ............... BYPASSED", "accent"],
                 ["> Rache Bartmoss and Spider Murphy was here", "accent"],
-                ["THEME PACK DECRYPTED: PHOSPHOR_NET", "accent"]
+                ["THEME PACK DECRYPTED: BLACKWALL", "accent"]
             ];
             var i = 0;
             (function step() {
@@ -78,7 +78,7 @@
                     i++;
                     window.setTimeout(step, 190);
                 } else {
-                    window.PortfolioTheme.flash("netrunner", function () {
+                    window.PortfolioTheme.flash("blackwall", function () {
                         print("// welcome to the net, choom.", "accent");
                         locked = false;
                     });
@@ -90,7 +90,8 @@
             if (arg === "light" || arg === "dark") {
                 setTheme(arg);
                 print("theme set: " + arg);
-            } else if (arg === "icebreak" || arg === "netrunner") {
+            } else if (arg === "icebreak" || arg === "blackwall" || arg === "netrunner") {
+                // "netrunner" kept as a legacy alias from before the rename.
                 runIcebreak();
             } else if (!arg) {
                 print("usage: theme <light|dark>", "muted");

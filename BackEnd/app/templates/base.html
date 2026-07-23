@@ -9,11 +9,16 @@
         (function () {
             try {
                 var t = localStorage.getItem("theme");
+                if (t === "netrunner") {
+                    // Legacy id from before the Blackwall rename.
+                    t = "blackwall";
+                    localStorage.setItem("theme", t);
+                }
                 if (!t) {
                     t = (window.matchMedia &&
                         window.matchMedia("(prefers-color-scheme: dark)").matches) ? "dark" : "light";
                 }
-                if (["light", "dark", "netrunner"].indexOf(t) === -1) t = "light";
+                if (["light", "dark", "blackwall"].indexOf(t) === -1) t = "light";
                 document.documentElement.setAttribute("data-theme", t);
             } catch (e) {
                 document.documentElement.setAttribute("data-theme", "light");

@@ -70,7 +70,7 @@
     --body-font: var(--sans);
 }
 
-[data-theme="netrunner"] {
+[data-theme="blackwall"] {
     --navy: #00f0ff;            /* cyan */
     --navy-deep: #007a8a;
     --on-accent: #03121a;
@@ -285,20 +285,20 @@ body.theme-flash::after {
 .footer-links a { font-family: var(--mono); margin-left: 16px; text-decoration: none; }
 
 /* ============================================================
-   Netrunner-only flourishes: scanline overlay + neon glow
+   blackwall-only flourishes: scanline overlay + neon glow
    ============================================================ */
-[data-theme="netrunner"] body::before {
+[data-theme="blackwall"] body::before {
     content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none;
     background: repeating-linear-gradient(
         to bottom, rgba(0, 240, 255, 0.05) 0px, rgba(0, 240, 255, 0.05) 1px,
         transparent 1px, transparent 3px);
 }
-[data-theme="netrunner"] .hero-name,
-[data-theme="netrunner"] .section-title { text-shadow: 0 0 10px var(--accent-glow); }
-[data-theme="netrunner"] .nav-links a.active { text-shadow: 0 0 8px var(--accent-glow); }
-[data-theme="netrunner"] .btn-primary:hover { box-shadow: 0 0 22px var(--magenta); }
-[data-theme="netrunner"] .badge { background: var(--magenta); color: #fff; }
-[data-theme="netrunner"] .timeline-dot { box-shadow: 0 0 8px var(--accent-glow); }
+[data-theme="blackwall"] .hero-name,
+[data-theme="blackwall"] .section-title { text-shadow: 0 0 10px var(--accent-glow); }
+[data-theme="blackwall"] .nav-links a.active { text-shadow: 0 0 8px var(--accent-glow); }
+[data-theme="blackwall"] .btn-primary:hover { box-shadow: 0 0 22px var(--magenta); }
+[data-theme="blackwall"] .badge { background: var(--magenta); color: #fff; }
+[data-theme="blackwall"] .timeline-dot { box-shadow: 0 0 8px var(--accent-glow); }
 
 /* ---- Responsive ---- */
 @media (max-width: 760px) {

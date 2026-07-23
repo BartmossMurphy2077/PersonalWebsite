@@ -1,4 +1,4 @@
-// Theme manager: light <-> dark via the nav toggle, plus a hidden "netrunner"
+// Theme manager: light <-> dark via the nav toggle, plus a hidden "blackwall"
 // theme unlocked from the home terminal. Preference persists in localStorage.
 // A pre-paint inline script in <head> applies the stored theme before this runs
 // to avoid a flash of the wrong theme.
@@ -7,10 +7,18 @@
 
     var root = document.documentElement;
     var KEY = "theme";
-    var VALID = ["light", "dark", "netrunner"];
+    var VALID = ["light", "dark", "blackwall"];
 
     function stored() {
-        try { return localStorage.getItem(KEY); } catch (e) { return null; }
+        try {
+            var t = localStorage.getItem(KEY);
+            if (t === "netrunner") {
+                // Legacy id from before the Blackwall rename.
+                t = "blackwall";
+                localStorage.setItem(KEY, t);
+            }
+            return t;
+        } catch (e) { return null; }
     }
     function save(theme) {
         try { localStorage.setItem(KEY, theme); } catch (e) { /* ignore */ }
@@ -61,7 +69,7 @@
         var btn = document.getElementById("theme-toggle");
         if (btn) {
             btn.addEventListener("click", function () {
-                // Toggle only swaps light <-> dark; this also exits netrunner.
+                // Toggle only swaps light <-> dark; this also exits blackwall.
                 apply(current() === "light" ? "dark" : "light", true);
             });
         }
