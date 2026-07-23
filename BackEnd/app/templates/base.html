@@ -35,19 +35,31 @@
     <header class="site-header">
         <nav class="nav container">
             <a class="nav-brand" href="{{ url_for('public.home') }}">
-                <span class="prompt">~/</span>{{ settings.name if settings else 'home' }}
+                <span class="prompt">~/</span><span class="cyno-hide">{{ settings.name if settings else 'home' }}</span><span class="cyno-only">SITE-C</span>
             </a>
             <div class="nav-right">
                 <ul class="nav-links">
-                    <li><a href="{{ url_for('public.home') }}" class="{{ 'active' if active_page == 'home' }}">home</a></li>
-                    <li><a href="{{ url_for('public.about') }}" class="{{ 'active' if active_page == 'about' }}">about</a></li>
-                    <li><a href="{{ url_for('public.projects') }}" class="{{ 'active' if active_page == 'projects' }}">projects</a></li>
-                    <li><a href="{{ url_for('public.cv') }}" class="{{ 'active' if active_page == 'cv' }}">cv</a></li>
+                    <li><a href="{{ url_for('public.home') }}" class="{{ 'active' if active_page == 'home' }}"><span class="cyno-hide">home</span><span class="cyno-only">site-c</span></a></li>
+                    <li><a href="{{ url_for('public.about') }}" class="{{ 'active' if active_page == 'about' }}"><span class="cyno-hide">about</span><span class="cyno-only">personnel</span></a></li>
+                    <li><a href="{{ url_for('public.projects') }}" class="{{ 'active' if active_page == 'projects' }}"><span class="cyno-hide">projects</span><span class="cyno-only">dataspikes</span></a></li>
+                    <li><a href="{{ url_for('public.cv') }}" class="{{ 'active' if active_page == 'cv' }}"><span class="cyno-hide">cv</span><span class="cyno-only">clearance</span></a></li>
                 </ul>
                 <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch theme">&#9790;</button>
             </div>
         </nav>
+        <div class="cyno-status cyno-only" id="cyno-status" role="status">
+            <span class="cyno-status-item">CYNOSURE // CONTAINMENT: <strong>FAILED</strong></span>
+            <span class="cyno-status-item">BREACH: <span id="cyno-breach">87</span>%</span>
+            <span class="cyno-status-item">BLACKWALL PROXIMITY: <strong>HIGH</strong></span>
+            {% if active_page == 'home' %}
+            <span class="cyno-status-item cyno-status-hint">CORE TERMINAL ONLINE &mdash; AWAITING RESEAL</span>
+            {% else %}
+            <a class="cyno-status-item cyno-status-hint" href="{{ url_for('public.home') }}">RETURN TO SITE-C CORE TO RESEAL &rarr;</a>
+            {% endif %}
+        </div>
     </header>
+
+    <div class="cyno-lore-flash cyno-only" id="cyno-lore-flash" aria-hidden="true"></div>
 
     <main class="page" id="page">
         {% block content %}{% endblock %}
@@ -64,6 +76,9 @@
                 <a href="{{ settings.linkedin_url }}" target="_blank" rel="noopener">LinkedIn</a>
                 {% endif %}
                 <span class="ice-glyph" aria-hidden="true" title="ICE integrity 99.7%">&#9618;&#9619;</span>
+                <img class="cyno-stamp cyno-stamp-samurai cyno-only"
+                     src="{{ url_for('static', filename='img/samurai.png') }}"
+                     alt="" aria-hidden="true" title="the wall is patient">
             </div>
         </div>
     </footer>
@@ -72,6 +87,7 @@
     <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
     <script src="{{ url_for('static', filename='js/reveal.js') }}"></script>
     <script src="{{ url_for('static', filename='js/blackwall.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/cynosure.js') }}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

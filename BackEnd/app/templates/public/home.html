@@ -5,6 +5,16 @@
 {% block content %}
 <section class="hero container">
     <div class="hero-left">
+        <div class="cyno-dossier cyno-only" id="cyno-dossier">
+            <img class="cyno-stamp cyno-stamp-militech"
+                 src="{{ url_for('static', filename='img/militech.webp') }}"
+                 alt="" aria-hidden="true">
+            <div class="cyno-dossier-lines">
+                <span>MILITECH // SITE-C PERSONNEL DOSSIER</span>
+                <span>OPERATOR: {{ settings.name | upper }}</span>
+                <span>CLEARANCE: BLACK // STATUS: INSIDE THE WALL</span>
+            </div>
+        </div>
         {% if primary_photo %}
         <img class="hero-photo" src="{{ url_for('public.uploads', filename=primary_photo.filename) }}"
              alt="{{ primary_photo.alt_text or settings.name }}">
@@ -35,7 +45,7 @@
         <div class="terminal" id="terminal" data-responses='{{ settings.terminal_responses | tojson }}'>
             <div class="terminal-bar">
                 <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
-                <span class="terminal-title">bash</span>
+                <span class="terminal-title"><span class="cyno-hide">bash</span><span class="cyno-only">SITE-C CORE // CONTAINMENT SHELL</span></span>
             </div>
             <div class="terminal-body" id="terminal-body">
                 <div class="terminal-line"><span class="prompt">guest@hugo:~$</span> help</div>

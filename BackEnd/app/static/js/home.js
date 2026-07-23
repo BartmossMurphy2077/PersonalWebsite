@@ -55,12 +55,42 @@
             if (window.PortfolioTheme) window.PortfolioTheme.set(theme, true);
         }
 
+        function reducedMotion() {
+            return window.matchMedia &&
+                window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        }
+
+        // Print a staged sequence of [text, className] lines, then call done.
+        // Under reduced motion everything prints at once.
+        function playSequence(lines, stepMs, done) {
+            if (reducedMotion()) {
+                for (var j = 0; j < lines.length; j++) print(lines[j][0], lines[j][1]);
+                done();
+                return;
+            }
+            var i = 0;
+            (function step() {
+                if (i < lines.length) {
+                    print(lines[i][0], lines[i][1]);
+                    i++;
+                    window.setTimeout(step, stepMs);
+                } else {
+                    done();
+                }
+            })();
+        }
+
         // The hidden cyberpunk unlock: prints a fake ICE-breach sequence, then
         // flashes into the blackwall theme. Nods to the BartmossMurphy2077 handle.
         function runIcebreak() {
             if (!window.PortfolioTheme) {
                 print("theme engine unavailable", "muted");
                 return;
+            }
+            // Remember where to surface again when containment is resealed.
+            var from = window.PortfolioTheme.current();
+            if (from === "light" || from === "dark") {
+                try { localStorage.setItem("bw-return-theme", from); } catch (e) { /* ignore */ }
             }
             locked = true;
             var lines = [
@@ -71,19 +101,51 @@
                 ["> Rache Bartmoss and Spider Murphy was here", "accent"],
                 ["THEME PACK DECRYPTED: BLACKWALL", "accent"]
             ];
-            var i = 0;
-            (function step() {
-                if (i < lines.length) {
-                    print(lines[i][0], lines[i][1]);
-                    i++;
-                    window.setTimeout(step, 190);
-                } else {
-                    window.PortfolioTheme.flash("blackwall", function () {
-                        print("// welcome to the net, choom.", "accent");
-                        locked = false;
-                    });
-                }
-            })();
+            playSequence(lines, 190, function () {
+                window.PortfolioTheme.flash("blackwall", function () {
+                    print("// welcome to the net, choom.", "accent");
+                    print("// you are inside SITE-C. exit protocol: containment reseal", "muted");
+                    locked = false;
+                });
+            });
+        }
+
+        // Exit theater: reseal the facility, then surface on the pre-breach
+        // theme. The nav toggle is mocked while blackwall is active, so this
+        // sequence is the only door out.
+        function runReseal() {
+            if (!window.PortfolioTheme) {
+                print("theme engine unavailable", "muted");
+                return;
+            }
+            if (window.PortfolioTheme.current() !== "blackwall") {
+                print("containment is already sealed. nothing to reseal.", "muted");
+                return;
+            }
+            locked = true;
+            var lines = [
+                ["INITIATING CONTAINMENT RESEAL ...", "muted"],
+                ["GATING ROGUE AI CHANNELS ........ 12 / 12", "accent"],
+                ["PURGING R.A.B.I.D.S. RESIDUE .... OK", "accent"],
+                ["CERBERUS UNITS .................. POWERED DOWN", "accent"],
+                ["BREACH CONTAINED ................ 61%", "accent"],
+                ["BREACH CONTAINED ................ 87%", "accent"],
+                ["BREACH CONTAINED ................ 99.4%", "accent"],
+                ["BLACKWALL HANDSHAKE ............. SEVERED", "accent"],
+                ["\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584\u2584", "accent"],
+                ["\u2588  S I T E - C  //  SEALED  \u2588", "accent"],
+                ["\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580\u2580", "accent"],
+                ["> the wall holds. for now.", "accent"]
+            ];
+            playSequence(lines, 210, function () {
+                var back = "dark";
+                try { back = localStorage.getItem("bw-return-theme") || "dark"; } catch (e) { /* ignore */ }
+                if (back !== "light" && back !== "dark") back = "dark";
+                window.PortfolioTheme.flash(back, function () {
+                    print("// link restored. welcome back to the surface.", "muted");
+                    locked = false;
+                });
+            });
         }
 
         function handleTheme(arg) {
@@ -113,9 +175,21 @@
                 handleTheme(cmd.slice(5).trim());
                 return;
             }
+            if (cmd === "containment reseal") {
+                runReseal();
+                return;
+            }
+            if (cmd === "containment") {
+                print("usage: containment reseal", "muted");
+                return;
+            }
             if (cmd === "help") {
                 if (responses.help) print(responses.help);
-                print("tip: 'theme dark' / 'theme light' switch the look. some themes are hidden.", "muted");
+                if (document.documentElement.getAttribute("data-theme") === "blackwall") {
+                    print("containment reseal ... attempt to exit the facility", "muted");
+                } else {
+                    print("tip: 'theme dark' / 'theme light' switch the look. some themes are hidden.", "muted");
+                }
                 return;
             }
             if (Object.prototype.hasOwnProperty.call(responses, cmd)) {
@@ -142,5 +216,15 @@
                 localStorage.setItem("bw-hint-seen", "1");
             }
         } catch (e) { /* private mode: skip the hint */ }
+
+        // Arriving on home already inside the facility: play the Site-C boot.
+        if (document.documentElement.getAttribute("data-theme") === "blackwall") {
+            playSequence([
+                ["SITE-C CORE ONLINE .............. DEGRADED", "muted"],
+                ["CONTAINMENT ..................... FAILED", "accent"],
+                ["ROGUE AI SIGNATURES ............. PRESENT", "accent"],
+                ["exit protocol: containment reseal", "muted"]
+            ], 240, function () { /* input stays live */ });
+        }
     }
 })();

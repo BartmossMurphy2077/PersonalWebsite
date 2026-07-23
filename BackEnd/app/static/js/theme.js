@@ -33,6 +33,15 @@
     function updateToggle(theme) {
         var btn = document.getElementById("theme-toggle");
         if (!btn) return;
+        if (theme === "blackwall") {
+            // Inside the facility the link is severed: the toggle is theater
+            // until 'containment reseal' is run from the core terminal.
+            btn.textContent = "\u26D3"; // chains
+            var severed = "LINK SEVERED - reseal containment from the core terminal";
+            btn.setAttribute("aria-label", severed);
+            btn.setAttribute("title", severed);
+            return;
+        }
         var goLight = theme !== "light";
         btn.textContent = goLight ? "\u2600" : "\u263E"; // sun / moon
         var label = goLight ? "Switch to light mode" : "Switch to dark mode";
@@ -69,7 +78,17 @@
         var btn = document.getElementById("theme-toggle");
         if (btn) {
             btn.addEventListener("click", function () {
-                // Toggle only swaps light <-> dark; this also exits blackwall.
+                if (current() === "blackwall") {
+                    // Mocked: escape only via 'containment reseal' on home.
+                    btn.classList.remove("toggle-mocked");
+                    void btn.offsetWidth; // restart the shake animation
+                    btn.classList.add("toggle-mocked");
+                    try {
+                        document.dispatchEvent(new CustomEvent("cyno:linksevered"));
+                    } catch (e) { /* older browsers: skip the status flash */ }
+                    return;
+                }
+                // Toggle only swaps light <-> dark.
                 apply(current() === "light" ? "dark" : "light", true);
             });
         }

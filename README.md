@@ -71,7 +71,29 @@ FLATLINE PROTOCOL ............... BYPASSED
 THEME PACK DECRYPTED: BLACKWALL
 ```
 
-Then the site flatlines for a split second and boots into **Blackwall mode**.
+Then the site flatlines for a split second and boots into **Blackwall mode** —
+and the whole site becomes **SITE-C**, a breached Militech Cynosure facility:
+
+```
+NAV REMAP ....... home→site-c, about→personnel, projects→dataspikes, cv→clearance
+STATUS BAR ...... CYNOSURE // CONTAINMENT: FAILED // BREACH: 87%
+HOME ............ Site-C core console + operator dossier (Militech seal)
+ABOUT ........... NetWatch oversight dossier
+PROJECTS ........ featured project = infected CORE NODE dump; the rest
+                  scatter into a rogue node cluster
+FOOTER .......... a certain Samurai was here
+AMBIENCE ........ background lore flashes + breach ticker
+```
+
+**There is no toggle out.** The sun/moon button is severed inside the facility.
+To leave, return to the home terminal and run:
+
+```bash
+containment reseal
+```
+
+Watch the locks engage, the breach percentage fall, and the Site-C seal
+re-engage — then you surface on whatever theme you breached from.
 
 Other terminal commands:
 
@@ -171,7 +193,7 @@ cd BackEnd
 python -m pytest
 ```
 
-26 HTTP-seam tests. Isolated temp DB per run — your live data stays untouched.
+32 HTTP-seam tests. Isolated temp DB per run — your live data stays untouched.
 
 ---
 
@@ -192,10 +214,12 @@ BackEnd/
     templates/            # Jinja (public/ + admin/ + 404)
     static/
       css/main.css        # 3-theme token system (light/dark/blackwall)
+      img/                # corp stamps (Militech, NetWatch, Arasaka, Samurai)
       js/
         theme.js          # theme toggle + localStorage
         home.js           # terminal widget + icebreak sequence
         blackwall.js      # WebGL atmosphere (blackwall theme only)
+        cynosure.js       # facility ambience: lore flashes + breach ticker
         reveal.js         # scroll-reveal animations
         transitions.js    # terminal-boot page transitions
   tests/

@@ -5,11 +5,13 @@
 {% block content %}
 <section class="container content-page">
     <div class="cv-header">
-        <h1 class="section-title">// curriculum vitae</h1>
+        <h1 class="section-title"><span class="cyno-hide">// curriculum vitae</span><span class="cyno-only">// clearance record</span></h1>
         {% if settings.cv_pdf_filename %}
         <a class="btn btn-primary" href="{{ url_for('public.cv_download') }}">Download PDF</a>
         {% endif %}
     </div>
+
+    <p class="cyno-clearance-note cyno-only">SITE-C ARCHIVE // assignment history recovered from sealed records. entries verified against pre-breach payroll.</p>
 
     {% if entries %}
     <ol class="timeline">
