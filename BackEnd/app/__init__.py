@@ -40,4 +40,12 @@ def create_app(config_object=Config):
         seed_if_empty()
         os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
 
+    @app.cli.command("refresh-content")
+    def refresh_content_command():
+        """Replace settings/about/timeline/projects with current seed data."""
+        from .seed import refresh_content
+
+        refresh_content()
+        print("Content refreshed from seed (photos and CV PDF preserved).")
+
     return app
