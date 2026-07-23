@@ -30,6 +30,56 @@ def test_projects_page_lists_seeded_project(client):
     assert b"Personal Website CMS" in response.data
 
 
+def test_projects_page_lists_curated_github_projects(client):
+    response = client.get("/projects")
+    body = response.data
+    assert b"PromptInjectionTester" in body
+    assert b"Slang-Aware Sentiment Analysis" in body
+    assert b"GPT Challenge" in body
+    assert b"Expense Management System" in body
+    assert b"Well-Being Visualisation" in body
+
+
+def test_layout_allowlists_blackwall_theme(client):
+    """The pre-paint script accepts blackwall and no longer lists netrunner."""
+    response = client.get("/")
+    assert b'["light", "dark", "blackwall"]' in response.data
+    assert b'["light", "dark", "netrunner"]' not in response.data
+
+
+def test_layout_mounts_blackwall_canvas(client):
+    response = client.get("/")
+    assert b'id="blackwall-canvas"' in response.data
+
+
+def test_footer_has_ice_glyph_breadcrumb(client):
+    response = client.get("/about")
+    assert b'class="ice-glyph"' in response.data
+
+
+def test_refresh_content_replaces_stale_copy_but_keeps_cv_pdf(app, client):
+    from app.extensions import db
+    from app.models import SiteSettings
+    from app.seed import refresh_content
+
+    with app.app_context():
+        settings = SiteSettings.query.first()
+        settings.tagline = "stale tagline"
+        settings.cv_pdf_filename = "cv.pdf"
+        db.session.commit()
+
+        refresh_content()
+
+        refreshed = SiteSettings.query.first()
+        assert refreshed.tagline != "stale tagline"
+        assert refreshed.cv_pdf_filename == "cv.pdf"
+
+    # The refreshed copy is what public pages serve.
+    response = client.get("/")
+    assert b"stale tagline" not in response.data
+    assert b"Hugo Kotuc" in response.data
+
+
 def test_cv_page_lists_timeline_entry(client):
     response = client.get("/cv")
     assert response.status_code == 200

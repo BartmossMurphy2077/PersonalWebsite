@@ -12,7 +12,7 @@
         ██║  ██║╚██████╔╝   ██║   ╚██████╔╝╚██████╔╝
         ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝  ╚═════╝
 
-              // NETRUNNER INTERFACE v2.077 — ONLINE
+              // BLACKWALL INTERFACE v2.077 — ONLINE
               // WAKE UP, SAMURAI. WE HAVE A PORTFOLIO TO BUILD.
 ```
 
@@ -31,20 +31,24 @@ Public pages (Home, About, Projects, CV) are content-managed through a password-
 | Surface | What it does |
 |---------|----------------|
 | **Public site** | Split hero, typewriter subtitles, interactive terminal, project grid, CV timeline + PDF, photo gallery, terminal-boot page transitions |
-| **Themes** | Light (recruiter mode), Dark (dev terminal), and a hidden **Netrunner** theme behind the ICE |
+| **Themes** | Light (recruiter mode), Dark (red/black dev terminal), and a hidden **Blackwall** theme behind the ICE |
 | **Admin** (`/admin`) | CRUD for settings, photos, CV/experience, projects, about copy. Single-password login |
 
 ### Theme system
 
 ```
 LIGHT ........ recruiter-safe, clean sans-serif
-DARK  ........ dev terminal aesthetic, monospace headings
-NETRUNNER .... cyan + magenta phosphor glow, full monospace, scanlines
+DARK  ........ dev terminal aesthetic, blood-red accents, monospace headings
+BLACKWALL .... red on void black, full monospace, dense scanlines,
+               and a continuous WebGL noise atmosphere behind the page
 ```
 
 Toggle **light ↔ dark** with the sun/moon button in the nav.
 
-The **Netrunner** theme is not in the toggle. You have to breach the ICE yourself.
+The **Blackwall** theme is not in the toggle. You have to breach the ICE yourself.
+Once unlocked it persists (localStorage) until you switch back. The WebGL layer
+adapts its resolution to your hardware, pauses in hidden tabs, and is skipped
+entirely under `prefers-reduced-motion` (CSS scanlines remain).
 
 ---
 
@@ -64,10 +68,10 @@ ARASAKA DAEMON.SYS .............. NEUTRALIZED
 BLACKWALL HANDSHAKE ............. OK
 FLATLINE PROTOCOL ............... BYPASSED
 > Rache Bartmoss and Spider Murphy was here
-THEME PACK DECRYPTED: PHOSPHOR_NET
+THEME PACK DECRYPTED: BLACKWALL
 ```
 
-Then the site flatlines for a split second and boots into **Netrunner mode**.
+Then the site flatlines for a split second and boots into **Blackwall mode**.
 
 Other terminal commands:
 
@@ -77,7 +81,8 @@ theme dark       # dev terminal mode
 help             # hints that some themes are hidden (doesn't spoil the command)
 ```
 
-> *"Some themes are hidden." — that's your only hint. Good luck, choom.*
+> *"Some themes are hidden." — that's your only hint. Well, that and a certain
+> glitchy glyph in the footer. Good luck, choom.*
 
 ---
 
@@ -126,7 +131,14 @@ python backend.py
 | Site | http://127.0.0.1:5000 |
 | Admin | http://127.0.0.1:5000/admin/login |
 
-Database seeds on first run.
+Database seeds on first run. If you already have a database and want to adopt
+the latest seed copy (projects, bio, timeline) without losing photos or the CV
+PDF, run:
+
+```bash
+cd BackEnd
+flask --app backend refresh-content
+```
 
 ---
 
@@ -159,7 +171,7 @@ cd BackEnd
 python -m pytest
 ```
 
-21 HTTP-seam tests. Isolated temp DB per run — your live data stays untouched.
+26 HTTP-seam tests. Isolated temp DB per run — your live data stays untouched.
 
 ---
 
@@ -172,17 +184,18 @@ BackEnd/
     __init__.py           # app factory + 404 handler
     config.py             # env-driven config
     models.py             # SQLite schema
-    seed.py               # first-run content (LinkedIn/GitHub sourced)
+    seed.py               # first-run content + refresh-content CLI (LinkedIn/GitHub sourced)
     auth.py               # admin session login
     public.py             # Home, About, Projects, CV
     admin.py              # dashboard CRUD
     uploads.py            # file upload helpers
     templates/            # Jinja (public/ + admin/ + 404)
     static/
-      css/main.css        # 3-theme token system (light/dark/netrunner)
+      css/main.css        # 3-theme token system (light/dark/blackwall)
       js/
         theme.js          # theme toggle + localStorage
         home.js           # terminal widget + icebreak sequence
+        blackwall.js      # WebGL atmosphere (blackwall theme only)
         reveal.js         # scroll-reveal animations
         transitions.js    # terminal-boot page transitions
   tests/
