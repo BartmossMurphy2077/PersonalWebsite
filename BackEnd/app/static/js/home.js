@@ -133,5 +133,14 @@
         });
 
         terminal.addEventListener("click", function () { if (!locked) input.focus(); });
+
+        // One-time breadcrumb: nudge first-time visitors toward the shell
+        // (and, eventually, the hidden theme) without spoiling the command.
+        try {
+            if (!localStorage.getItem("bw-hint-seen")) {
+                print("// first login detected. this shell keeps secrets - start with 'help'.", "muted");
+                localStorage.setItem("bw-hint-seen", "1");
+            }
+        } catch (e) { /* private mode: skip the hint */ }
     }
 })();

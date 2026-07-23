@@ -73,31 +73,32 @@
 }
 
 [data-theme="blackwall"] {
-    --navy: #00f0ff;            /* cyan */
-    --navy-deep: #007a8a;
-    --on-accent: #03121a;
-    --accent-soft: rgba(0, 240, 255, 0.10);
-    --accent-glow: rgba(0, 240, 255, 0.35);
-    --magenta: #ff2a6d;
+    /* Behind the Blackwall: blood red on void black. */
+    --navy: #ff1a1a;            /* hot red */
+    --navy-deep: #8a0303;
+    --on-accent: #0a0000;
+    --accent-soft: rgba(255, 26, 26, 0.12);
+    --accent-glow: rgba(255, 26, 26, 0.45);
+    --magenta: #ff084a;         /* crimson secondary */
 
-    --bg: #0a0a0f;
-    --surface: #12121c;
-    --ink: #c8f7ff;
-    --muted: #6b7a99;
-    --border: #1f2a44;
-    --nav-bg: rgba(10, 10, 15, 0.85);
+    --bg: #050505;
+    --surface: #100a0a;
+    --ink: #efe2e2;
+    --muted: #8a6f6f;
+    --border: #2a1010;
+    --nav-bg: rgba(5, 5, 5, 0.85);
 
-    --term-bg: #060a12;
-    --term-panel: #0a0f1c;
-    --term-border: #14304a;
-    --term-bar: #06101c;
-    --term-text: #00f0ff;
-    --term-muted: #5a7a99;
-    --term-green: #00f0ff;
-    --term-green-dim: #00f0ff;
+    --term-bg: #070303;
+    --term-panel: #0d0505;
+    --term-border: #3a0d0d;
+    --term-bar: #050202;
+    --term-text: #ff4444;
+    --term-muted: #7a5555;
+    --term-green: #ff1a1a;
+    --term-green-dim: #d43b3b;
 
-    --shadow: 0 0 24px rgba(0, 240, 255, 0.15), 0 1.5px 6px rgba(0, 0, 0, 0.5);
-    --shadow-hover: 0 0 36px rgba(255, 42, 109, 0.30);
+    --shadow: 0 0 24px rgba(255, 26, 26, 0.15), 0 1.5px 6px rgba(0, 0, 0, 0.6);
+    --shadow-hover: 0 0 36px rgba(255, 8, 74, 0.35);
 
     --heading-font: var(--mono);
     --body-font: var(--mono);
@@ -287,20 +288,76 @@ body.theme-flash::after {
 .footer-links a { font-family: var(--mono); margin-left: 16px; text-decoration: none; }
 
 /* ============================================================
-   blackwall-only flourishes: scanline overlay + neon glow
+   Blackwall-only flourishes: WebGL atmosphere, dense scanlines,
+   neon glow, and glitch distortion. Nothing here leaks into
+   light or dark.
    ============================================================ */
+
+/* WebGL atmosphere canvas: painted behind in-flow content, never
+   interactive. blackwall.js drives it only while the theme is active. */
+.blackwall-canvas {
+    display: none;
+    position: fixed; inset: 0; z-index: -1;
+    width: 100%; height: 100%;
+    pointer-events: none;
+}
+[data-theme="blackwall"] .blackwall-canvas { display: block; }
+
+/* Dense red scanlines above content (CSS-only fallback keeps working
+   when WebGL is unavailable or reduced motion is requested). */
 [data-theme="blackwall"] body::before {
     content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none;
     background: repeating-linear-gradient(
-        to bottom, rgba(0, 240, 255, 0.05) 0px, rgba(0, 240, 255, 0.05) 1px,
-        transparent 1px, transparent 3px);
+        to bottom, rgba(255, 26, 26, 0.06) 0px, rgba(255, 26, 26, 0.06) 1px,
+        transparent 1px, transparent 2px);
 }
 [data-theme="blackwall"] .hero-name,
-[data-theme="blackwall"] .section-title { text-shadow: 0 0 10px var(--accent-glow); }
+[data-theme="blackwall"] .section-title { text-shadow: 0 0 12px var(--accent-glow); }
 [data-theme="blackwall"] .nav-links a.active { text-shadow: 0 0 8px var(--accent-glow); }
-[data-theme="blackwall"] .btn-primary:hover { box-shadow: 0 0 22px var(--magenta); }
+[data-theme="blackwall"] .btn-primary:hover { box-shadow: 0 0 26px var(--magenta); }
 [data-theme="blackwall"] .badge { background: var(--magenta); color: #fff; }
-[data-theme="blackwall"] .timeline-dot { box-shadow: 0 0 8px var(--accent-glow); }
+[data-theme="blackwall"] .timeline-dot { box-shadow: 0 0 10px var(--accent-glow); }
+
+/* Occasional RGB-split flicker on the hero name — heavy distortion is
+   Blackwall's signature, so it stays gated behind the theme and the
+   user's motion preference. */
+@media (prefers-reduced-motion: no-preference) {
+    [data-theme="blackwall"] .hero-name {
+        animation: bw-rgb-split 5s infinite steps(1, end);
+    }
+    [data-theme="blackwall"] .page {
+        animation: fade-up 0.5s ease both, bw-settle 0.9s ease both;
+    }
+}
+@keyframes bw-rgb-split {
+    0%, 92%, 100% { text-shadow: 0 0 12px var(--accent-glow); }
+    93% { text-shadow: -2px 0 0 #ff084a, 2px 0 0 #4de8ff, 0 0 12px var(--accent-glow); }
+    94% { text-shadow: 2px 0 0 #ff084a, -2px 0 0 #4de8ff, 0 0 12px var(--accent-glow); }
+    95% { text-shadow: 0 0 12px var(--accent-glow); }
+    97% { text-shadow: -1px 0 0 #ff084a, 1px 0 0 #4de8ff, 0 0 12px var(--accent-glow); }
+}
+@keyframes bw-settle {
+    0% { filter: saturate(2.2) contrast(1.25); transform: skewX(0.6deg); }
+    40% { filter: saturate(1.3) contrast(1.08); transform: skewX(-0.25deg); }
+    100% { filter: none; transform: none; }
+}
+
+/* ---- Footer ICE glyph breadcrumb (all themes, quiet until hovered) ---- */
+.ice-glyph {
+    font-family: var(--mono); color: var(--muted); font-size: 0.85rem;
+    margin-left: 16px; cursor: default; user-select: none;
+    display: inline-block;
+}
+@media (prefers-reduced-motion: no-preference) {
+    .ice-glyph:hover { animation: ice-glitch 0.28s steps(2, end) infinite; color: #ff3b3b; }
+}
+@keyframes ice-glitch {
+    0% { transform: translate(0, 0); opacity: 1; }
+    25% { transform: translate(-1px, 1px) skewX(-10deg); opacity: 0.7; }
+    50% { transform: translate(1px, -1px); opacity: 1; }
+    75% { transform: translate(-1px, -1px) skewX(8deg); opacity: 0.8; }
+    100% { transform: translate(1px, 1px); opacity: 1; }
+}
 
 /* ---- Responsive ---- */
 @media (max-width: 760px) {
