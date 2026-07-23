@@ -41,27 +41,29 @@
 }
 
 [data-theme="dark"] {
-    --navy: #3ddc84;
-    --navy-deep: #1f9d57;
-    --on-accent: #06210f;
-    --accent-soft: rgba(61, 220, 132, 0.14);
-    --accent-glow: rgba(61, 220, 132, 0.28);
+    /* Red/black cyberpunk accents — palette only. Scanlines, glitch, and
+       WebGL stay exclusive to the hidden blackwall theme. */
+    --navy: #ff3b3b;
+    --navy-deep: #b31d1d;
+    --on-accent: #fff5f5;
+    --accent-soft: rgba(255, 59, 59, 0.12);
+    --accent-glow: rgba(255, 59, 59, 0.26);
 
-    --bg: #0d1117;
-    --surface: #161b22;
-    --ink: #c9d1d9;
+    --bg: #0b0d10;
+    --surface: #14171c;
+    --ink: #d4d8de;
     --muted: #8b949e;
-    --border: #21262d;
-    --nav-bg: rgba(13, 17, 23, 0.85);
+    --border: #23272e;
+    --nav-bg: rgba(11, 13, 16, 0.85);
 
-    --term-bg: #0d1117;
-    --term-panel: #161b22;
-    --term-border: #21262d;
-    --term-bar: #0b0e13;
-    --term-text: #c9d1d9;
+    --term-bg: #0b0d10;
+    --term-panel: #14171c;
+    --term-border: #23272e;
+    --term-bar: #08090c;
+    --term-text: #d4d8de;
     --term-muted: #6e7681;
-    --term-green: #3ddc84;
-    --term-green-dim: #3ddc84;
+    --term-green: #ff3b3b;
+    --term-green-dim: #d94f4f;
 
     --shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 1.5px 6px rgba(0, 0, 0, 0.3);
     --shadow-hover: 0 14px 36px rgba(0, 0, 0, 0.55);
