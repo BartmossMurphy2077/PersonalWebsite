@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}404 - Not Found{% endblock %}
+
+{% block content %}
+<section class="container content-page notfound">
+    <h1 class="section-title">// 404</h1>
+    <div class="terminal">
+        <div class="terminal-bar">
+            <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+            <span class="terminal-title">bash</span>
+        </div>
+        <div class="terminal-body">
+            <div class="terminal-line"><span class="prompt">guest@hugo:~$</span> open {{ request.path }}</div>
+            <div class="terminal-line">bash: {{ request.path }}: command not found</div>
+            <div class="terminal-line muted">the page you were looking for doesn't exist (or got flatlined).</div>
+            <div class="terminal-line"><span class="prompt">guest@hugo:~$</span> cd <a href="{{ url_for('public.home') }}">~</a></div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -4,18 +4,50 @@
 
 {% block content %}
 <section class="container content-page">
-    <h1 class="section-title">// projects</h1>
+    <h1 class="section-title"><span class="cyno-hide">// projects</span><span class="cyno-only">// recovered dataspikes</span></h1>
+
     {% if projects %}
+    {% set core = ((projects | selectattr('is_featured') | list) + projects) | first %}
+
+    {# Cynosure only: the featured project surfaces as the facility's core
+       node -- an infected terminal dump. Hidden outside blackwall. #}
+    <article class="cyno-core-dump cyno-only" id="cyno-core-dump">
+        <div class="cyno-dump-bar">
+            <img class="cyno-stamp cyno-stamp-militech"
+                 src="{{ url_for('static', filename='img/militech.webp') }}"
+                 alt="" aria-hidden="true">
+            <span class="cyno-dump-title">CORE NODE // {{ core.title }}</span>
+            <span class="cyno-dump-flag">INFECTED</span>
+        </div>
+        <div class="cyno-dump-body">
+            <div class="terminal-line muted">&gt; ACCESSING DATASPIKE 00 ................ OK</div>
+            <div class="terminal-line muted">&gt; INTEGRITY ............................ COMPROMISED</div>
+            <div class="terminal-line muted">&gt; PAYLOAD FOLLOWS</div>
+            <p class="cyno-dump-desc">{{ core.description }}</p>
+            <div class="tags">
+                {% for tag in core.tech_tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+            </div>
+            <div class="project-links">
+                {% if core.github_url %}<a href="{{ core.github_url }}" target="_blank" rel="noopener">extract code</a>{% endif %}
+                {% if core.demo_url %}<a href="{{ core.demo_url }}" target="_blank" rel="noopener">live signal</a>{% endif %}
+            </div>
+        </div>
+        <img class="cyno-stamp cyno-stamp-arasaka"
+             src="{{ url_for('static', filename='img/arasaka.svg') }}"
+             alt="" aria-hidden="true" title="rival signature detected">
+    </article>
+
     <div class="project-grid">
         {% for project in projects %}
-        <article class="project-card">
+        <article class="project-card{{ ' is-featured' if project.is_featured }}" style="--n: {{ loop.index0 }};">
             {% if project.thumbnail_filename %}
             <img class="project-thumb" src="{{ url_for('public.uploads', filename=project.thumbnail_filename) }}"
                  alt="{{ project.title }}">
             {% endif %}
             <h3>
+                <span class="cyno-only cyno-node-tag">NODE {{ '%02d' | format(loop.index) }} //</span>
                 {{ project.title }}
-                {% if project.is_featured %}<span class="badge">featured</span>{% endif %}
+                {% if project.is_featured %}<span class="badge"><span class="cyno-hide">featured</span><span class="cyno-only">core</span></span>{% endif %}
             </h3>
             <p>{{ project.description }}</p>
             <div class="tags">

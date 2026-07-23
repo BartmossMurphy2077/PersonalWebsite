@@ -4,7 +4,19 @@
 
 {% block content %}
 <section class="container content-page">
-    <h1 class="section-title">// about me</h1>
+    <h1 class="section-title"><span class="cyno-hide">// about me</span><span class="cyno-only">// personnel file</span></h1>
+
+    <div class="cyno-dossier cyno-only" id="cyno-netwatch-dossier">
+        <img class="cyno-stamp cyno-stamp-netwatch"
+             src="{{ url_for('static', filename='img/netwatch.png') }}"
+             alt="" aria-hidden="true">
+        <div class="cyno-dossier-lines">
+            <span>NETWATCH OVERSIGHT DOSSIER // SUBJECT: {{ settings.name | upper }}</span>
+            <span>EXPOSURE: BLACKWALL-ADJACENT // MONITORING: ACTIVE</span>
+            <span>NOTE: subject persists in breached sector. do not engage.</span>
+        </div>
+    </div>
+
     <div class="about-bio">
         {% for para in about.long_bio.split('\n') if para.strip() %}
         <p>{{ para }}</p>

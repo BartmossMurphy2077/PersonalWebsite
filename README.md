@@ -1,129 +1,251 @@
+```
+ ██████╗ ███████╗██████╗ ███████╗ ██████╗ ███╗   ██╗ █████╗ ██╗
+ ██╔══██╗██╔════╝██╔══██╗██╔════╝██╔═══██╗████╗  ██║██╔══██╗██║
+ ██████╔╝█████╗  ██████╔╝███████╗██║   ██║██╔██╗ ██║███████║██║
+ ██╔═══╝ ██╔══╝  ██╔══██╗╚════██║██║   ██║██║╚██╗██║██╔══██║██║
+ ██║     ███████╗██║  ██║███████║╚██████╔╝██║ ╚████║██║  ██║███████╗
+ ╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
+        ██╗  ██╗ ██████╗ ████████╗██╗   ██╗ ██████╗
+        ██║  ██║██╔═══██╗╚══██╔══╝██║   ██║██╔════╝
+        ███████║██║   ██║   ██║   ██║   ██║██║  ███╗
+        ██╔══██║██║   ██║   ██║   ██║   ██║██║   ██║
+        ██║  ██║╚██████╔╝   ██║   ╚██████╔╝╚██████╔╝
+        ╚═╝  ╚═╝ ╚═════╝    ╚═╝    ╚═════╝  ╚═════╝
+
+              // BLACKWALL INTERFACE v2.077 — ONLINE
+              // WAKE UP, SAMURAI. WE HAVE A PORTFOLIO TO BUILD.
+```
+
 # PersonalWebsite
 
-A personal portfolio site with a private admin dashboard (CMS), built with Flask
-+ SQLite. Public pages (Home, About, Projects, CV) are content-managed through a
-password-protected `/admin` dashboard — no code edits needed to update content.
+> *A personal portfolio rigged like a netrunner's deck — Flask + SQLite under the hood,
+> terminal widgets on the surface, and something lurking behind the ICE.*
+
+Public pages (Home, About, Projects, CV) are content-managed through a password-protected
+`/admin` dashboard. No code edits needed to update your story.
+
+---
 
 ## Features
 
-- **Public site**: split hero with photo + interactive terminal widget and
-  typewriter subtitles, projects grid, CV timeline with PDF download, about page
-  with photo gallery, terminal-boot page transitions.
-- **Admin dashboard** (`/admin`): manage site settings, photos, CV/experience
-  timeline, projects, and about-page copy. Single-password login.
+| Surface | What it does |
+|---------|----------------|
+| **Public site** | Split hero, typewriter subtitles, interactive terminal, project grid, CV timeline + PDF, photo gallery, terminal-boot page transitions |
+| **Themes** | Light (recruiter mode), Dark (red/black dev terminal), and a hidden **Blackwall** theme behind the ICE |
+| **Admin** (`/admin`) | CRUD for settings, photos, CV/experience, projects, about copy. Single-password login |
+
+### Theme system
+
+```
+LIGHT ........ recruiter-safe, clean sans-serif
+DARK  ........ dev terminal aesthetic, blood-red accents, monospace headings
+BLACKWALL .... red on void black, full monospace, dense scanlines,
+               and a continuous WebGL noise atmosphere behind the page
+```
+
+Toggle **light ↔ dark** with the sun/moon button in the nav.
+
+The **Blackwall** theme is not in the toggle. You have to breach the ICE yourself.
+Once unlocked it persists (localStorage) until you switch back. The WebGL layer
+adapts its resolution to your hardware, pauses in hidden tabs, and is skipped
+entirely under `prefers-reduced-motion` (CSS scanlines remain).
+
+---
+
+## // EASTER EGG — ICE BREAK PROTOCOL
+
+On the **home page terminal**, type:
+
+```bash
+theme icebreak
+```
+
+If your ICE holds, you'll see something like:
+
+```
+BREACHING ICE...
+ARASAKA DAEMON.SYS .............. NEUTRALIZED
+BLACKWALL HANDSHAKE ............. OK
+FLATLINE PROTOCOL ............... BYPASSED
+> Rache Bartmoss and Spider Murphy was here
+THEME PACK DECRYPTED: BLACKWALL
+```
+
+Then the site flatlines for a split second and boots into **Blackwall mode** —
+and the whole site becomes **SITE-C**, a breached Militech Cynosure facility:
+
+```
+NAV REMAP ....... home→site-c, about→personnel, projects→dataspikes, cv→clearance
+STATUS BAR ...... CYNOSURE // CONTAINMENT: FAILED // BREACH: 87%
+HOME ............ Site-C core console + operator dossier (Militech seal)
+ABOUT ........... NetWatch oversight dossier
+PROJECTS ........ featured project = infected CORE NODE dump; the rest
+                  scatter into a rogue node cluster
+FOOTER .......... a certain Samurai was here
+AMBIENCE ........ background lore flashes + breach ticker
+```
+
+**There is no toggle out.** The sun/moon button is severed inside the facility.
+To leave, return to the home terminal and run:
+
+```bash
+containment reseal
+```
+
+Watch the locks engage, the breach percentage fall, and the Site-C seal
+re-engage — then you surface on whatever theme you breached from.
+
+Other terminal commands:
+
+```bash
+theme light      # back to recruiter mode
+theme dark       # dev terminal mode
+help             # hints that some themes are hidden (doesn't spoil the command)
+```
+
+> *"Some themes are hidden." — that's your only hint. Well, that and a certain
+> glitchy glyph in the footer. Good luck, choom.*
+
+---
 
 ## Architecture
 
-The Flask app is a self-contained monolith: it serves the public HTML pages, the
-admin dashboard, the static assets, and uploaded media. SQLite stores all
-content; uploads live on disk.
-
 ```
-Browser ──▶ nginx (web tier) ──▶ gunicorn ──▶ Flask app ──▶ SQLite + uploads
+┌──────────┐     ┌─────────┐     ┌──────────┐     ┌─────────────┐     ┌──────────────┐
+│ Browser  │────▶│  nginx  │────▶│ gunicorn │────▶│  Flask app  │────▶│ SQLite +     │
+│          │     │ web tier│     │          │     │  (monolith) │     │ uploads/     │
+└──────────┘     └─────────┘     └──────────┘     └─────────────┘     └──────────────┘
 ```
 
-In local development you run the Flask dev server directly. In Docker, nginx sits
-in front of gunicorn (see [Running with Docker](#running-with-docker)).
+Flask serves public HTML, admin dashboard, static assets, and uploaded media.
+SQLite stores content; files live on disk.
+
+Local dev runs Flask directly. Docker puts nginx in front (see below).
+
+---
 
 ## Running locally (no Docker)
 
-1. Go to the `BackEnd` directory.
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate        # Windows
-   source venv/bin/activate     # macOS/Linux
-   ```
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. From the repository root, create your `.env` from the template:
-   ```bash
-   copy .env.example .env       # Windows
-   cp .env.example .env         # macOS/Linux
-   ```
-   Edit `.env` and set `ADMIN_PASSWORD` and `SECRET_KEY`. The same root `.env`
-   is used by both local runs and Docker.
-5. Back in `BackEnd`, run the app:
-   ```bash
-   python backend.py
-   ```
-6. Open http://127.0.0.1:5000 for the site, and http://127.0.0.1:5000/admin to
-   log in and manage content. The database is seeded with starter content on
-   first run.
+```bash
+cd BackEnd
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # macOS/Linux
+pip install -r requirements.txt
+```
+
+From the **repository root**, create your `.env`:
+
+```bash
+copy .env.example .env         # Windows
+cp .env.example .env           # macOS/Linux
+```
+
+Set `ADMIN_PASSWORD` and `SECRET_KEY`. Same `.env` for local and Docker.
+
+```bash
+cd BackEnd
+python backend.py
+```
+
+| Endpoint | URL |
+|----------|-----|
+| Site | http://127.0.0.1:5000 |
+| Admin | http://127.0.0.1:5000/admin/login |
+
+Database seeds on first run. If you already have a database and want to adopt
+the latest seed copy (projects, bio, timeline) without losing photos or the CV
+PDF, run:
+
+```bash
+cd BackEnd
+flask --app backend refresh-content
+```
+
+---
 
 ## Running with Docker
 
-All container definitions live in the `infrastructure/` directory, but commands
-are run from the repository root so they share the same root `.env`.
+From the **repository root**:
 
-1. From the repository root, create your environment file (skip if you already
-   made `.env` for local runs):
-   ```bash
-   cp .env.example .env         # then edit SECRET_KEY and ADMIN_PASSWORD
-   ```
-2. Build and start the stack:
-   ```bash
-   docker compose -f infrastructure/docker-compose.yml up --build
-   ```
-3. Open http://localhost:8080
+```bash
+cp .env.example .env           # skip if you already have one
+docker compose -f infrastructure/docker-compose.yml up --build
+```
 
-The SQLite database and uploaded media are stored in the named `portfolio-data`
-volume, so they survive container restarts and rebuilds. To wipe all content and
-start fresh:
+| Endpoint | URL |
+|----------|-----|
+| Site | http://localhost:8080 |
+| Admin | http://localhost:8080/admin/login |
+
+Data persists in the `portfolio-data` volume. Nuke everything and start fresh:
 
 ```bash
 docker compose -f infrastructure/docker-compose.yml down -v
 ```
 
+---
+
 ## Running tests
 
-From the `BackEnd` directory:
-
 ```bash
+cd BackEnd
 python -m pytest
 ```
 
-Tests exercise the app through the HTTP layer using Flask's test client against
-an isolated temporary database and uploads directory.
+32 HTTP-seam tests. Isolated temp DB per run — your live data stays untouched.
+
+---
 
 ## Project layout
 
 ```
-.env.example         # single env template (copy to .env at repo root)
+.env.example              # env template → copy to .env at repo root
 BackEnd/
   app/
-    __init__.py      # application factory
-    config.py        # configuration (env-driven)
-    extensions.py    # SQLAlchemy instance
-    models.py        # database models
-    seed.py          # first-run seed data
-    auth.py          # admin login/logout + login_required
-    public.py        # public page routes
-    admin.py         # admin CRUD routes
-    uploads.py       # file upload helpers
-    templates/       # Jinja templates (public/ and admin/)
-    static/          # CSS + JS (terminal widget, transitions)
-  tests/             # pytest HTTP-seam tests
-  backend.py         # dev entry point
+    __init__.py           # app factory + 404 handler
+    config.py             # env-driven config
+    models.py             # SQLite schema
+    seed.py               # first-run content + refresh-content CLI (LinkedIn/GitHub sourced)
+    auth.py               # admin session login
+    public.py             # Home, About, Projects, CV
+    admin.py              # dashboard CRUD
+    uploads.py            # file upload helpers
+    templates/            # Jinja (public/ + admin/ + 404)
+    static/
+      css/main.css        # 3-theme token system (light/dark/blackwall)
+      img/                # corp stamps (Militech, NetWatch, Arasaka, Samurai)
+      js/
+        theme.js          # theme toggle + localStorage
+        home.js           # terminal widget + icebreak sequence
+        blackwall.js      # WebGL atmosphere (blackwall theme only)
+        cynosure.js       # facility ambience: lore flashes + breach ticker
+        reveal.js         # scroll-reveal animations
+        transitions.js    # terminal-boot page transitions
+  tests/
+  backend.py              # dev entry point
   requirements.txt
 infrastructure/
-  docker-compose.yml # nginx + backend services + data volume
-  backend.Dockerfile # gunicorn-served Flask app
-  nginx.Dockerfile   # nginx web tier
-  nginx/default.conf # reverse-proxy config
+  docker-compose.yml
+  backend.Dockerfile
+  nginx.Dockerfile
+  nginx/default.conf
 ```
 
-## Notes
+---
 
-- Local development only for now; production deployment also needs the security
-  hardening below.
-- The SQLite database, uploaded media, and `.env` files are gitignored.
+## Security follow-ups (before going public)
 
-### Security follow-ups before going public
+```
+[ ] CSRF protection on admin forms (Flask-WTF)
+[ ] Enforce non-default ADMIN_PASSWORD (no changeme fallback)
+[ ] TLS/HTTPS at nginx (443 + cert)
+```
 
-- **CSRF protection** on admin forms (e.g. Flask-WTF) — not yet added.
-- **Enforced non-default admin password** — currently falls back to `changeme`
-  for local convenience if `ADMIN_PASSWORD` is unset.
-- **TLS/HTTPS** termination at nginx (add a certificate + `443` server block).
+---
+
+```
+// END OF TRANSMISSION
+// Rache Bartmoss and Spider Murphy was here
+// STAY CHROME, CHOOM.
+```

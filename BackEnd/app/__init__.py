@@ -2,7 +2,7 @@
 
 import os
 
-from flask import Flask
+from flask import Flask, render_template
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from .config import Config
@@ -27,11 +27,25 @@ def create_app(config_object=Config):
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
 
+    from .models import SiteSettings
+
+    @app.errorhandler(404)
+    def not_found(error):
+        return render_template("404.html", settings=SiteSettings.get()), 404
+
     with app.app_context():
         db.create_all()
         from .seed import seed_if_empty
 
         seed_if_empty()
         os.makedirs(app.config["UPLOAD_FOLDER"], exist_ok=True)
+
+    @app.cli.command("refresh-content")
+    def refresh_content_command():
+        """Replace settings/about/timeline/projects with current seed data."""
+        from .seed import refresh_content
+
+        refresh_content()
+        print("Content refreshed from seed (photos and CV PDF preserved).")
 
     return app
